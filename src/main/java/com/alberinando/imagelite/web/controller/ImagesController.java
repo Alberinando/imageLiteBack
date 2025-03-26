@@ -1,9 +1,11 @@
 package com.alberinando.imagelite.web.controller;
 
 import com.alberinando.imagelite.domain.entities.Image;
+import com.alberinando.imagelite.domain.entities.enums.ImageExtension;
 import com.alberinando.imagelite.domain.services.ImageServices;
 import com.alberinando.imagelite.infrastructure.mapper.ImageMapper;
 import com.alberinando.imagelite.web.dto.createImageDTO;
+import com.alberinando.imagelite.web.dto.responseImageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -15,11 +17,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/images")
 @Slf4j
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ImagesController {
 
     private final ImageServices imageServices;
@@ -50,9 +55,19 @@ public class ImagesController {
         return new ResponseEntity<>(image.getFile(), headers, HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<List<responseImageDTO>> search(@RequestParam(value = "Extension", required = false, defaultValue = "") String extension, @RequestParam(value = "Query", required = false) String query) {
+        var result = imageServices.search(ImageExtension.ofName(extension), query);
+        var images = result.stream().map(image -> {
+            var url = getImageURL(image);
+            return imageMapper.imageToDTO(image, url.toString());
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(images);
+    }
+
     private URI getImageURL(Image image) {
         String imagePath = "/" + image.getId();
         ServletUriComponentsBuilder.fromCurrentRequest();
-        return ServletUriComponentsBuilder.fromCurrentRequest().path(imagePath).build().toUri();
+        return ServletUriComponentsBuilder.fromCurrentRequestUri().path(imagePath).build().toUri();
     }
 }

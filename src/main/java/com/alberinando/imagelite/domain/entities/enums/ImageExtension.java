@@ -10,11 +10,7 @@ public enum ImageExtension {
     GIF("image/gif"),
     BMP("image/bmp"),
     TIFF("image/tiff"),
-    TIFF_GIF("image/tiff"),
-    WEBP("image/webp"),
-    WEBP_SNAPSHOT("image/webp"),
-    PNG_SNAPSHOT(MediaType.IMAGE_PNG_VALUE),
-    JPEG_SNAPSHOT(MediaType.IMAGE_JPEG_VALUE);
+    WEBP("image/webp");
 
     @Getter
     private final String mediaType;
