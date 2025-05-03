@@ -1,4 +1,4 @@
-package com.alberinando.imagelite.web.dto;
+package com.alberinando.imagelite.web.dto.image;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

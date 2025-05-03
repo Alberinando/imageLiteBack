@@ -2,8 +2,8 @@ package com.alberinando.imagelite.infrastructure.mapper;
 
 import com.alberinando.imagelite.domain.entities.Image;
 import com.alberinando.imagelite.domain.entities.enums.ImageExtension;
-import com.alberinando.imagelite.web.dto.createImageDTO;
-import com.alberinando.imagelite.web.dto.responseImageDTO;
+import com.alberinando.imagelite.web.dto.image.createImageDTO;
+import com.alberinando.imagelite.web.dto.image.responseImageDTO;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 

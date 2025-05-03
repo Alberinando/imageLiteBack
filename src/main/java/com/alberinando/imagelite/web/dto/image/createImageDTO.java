@@ -1,4 +1,4 @@
-package com.alberinando.imagelite.web.dto;
+package com.alberinando.imagelite.web.dto.image;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
