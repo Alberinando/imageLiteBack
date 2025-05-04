@@ -44,6 +44,11 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return request.getRequestURI().startsWith("/v1/users");
+    }
+
     private void setUserAsAuthenticated(User user) {
         UserDetails userDetails = org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
@@ -59,7 +64,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
-
 
     private String getToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");

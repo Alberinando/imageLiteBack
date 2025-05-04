@@ -55,6 +55,16 @@ public class ImagesController {
         return new ResponseEntity<>(image.getFile(), headers, HttpStatus.OK);
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        Image deletedImage = imageServices.delete(id);
+        if (deletedImage == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+
     @GetMapping
     public ResponseEntity<List<responseImageDTO>> search(@RequestParam(value = "Extension", required = false, defaultValue = "") String extension, @RequestParam(value = "Query", required = false) String query) {
         var result = imageServices.search(ImageExtension.ofName(extension), query);

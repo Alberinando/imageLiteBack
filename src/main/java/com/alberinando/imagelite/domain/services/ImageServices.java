@@ -32,4 +32,16 @@ public class ImageServices implements imageServicesImpl {
     public List<Image> search(ImageExtension imageExtension, String query) {
         return imageRepository.findByExtensionAndNameOrTagsLike(imageExtension, query);
     }
+
+    @Override
+    @Transactional
+    public Image delete(String id) {
+        return imageRepository.findById(id)
+                .map(image -> {
+                    imageRepository.delete(image);
+                    return image;
+                })
+                .orElseThrow(() -> new RuntimeException("Imagem não encontrada!!!"));
+    }
+
 }

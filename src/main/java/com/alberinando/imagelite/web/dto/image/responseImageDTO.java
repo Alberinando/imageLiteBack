@@ -15,4 +15,5 @@ public class responseImageDTO {
     private long size;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate uploadDate;
+    private String id;
 }

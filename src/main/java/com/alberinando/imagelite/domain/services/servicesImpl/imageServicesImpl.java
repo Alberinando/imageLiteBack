@@ -12,4 +12,6 @@ public interface imageServicesImpl {
     Optional<Image> findById(String id);
 
     List<Image> search(ImageExtension imageExtension, String query);
+
+    Image delete(String id);
 }
