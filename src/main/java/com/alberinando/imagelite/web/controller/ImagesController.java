@@ -4,6 +4,7 @@ import com.alberinando.imagelite.domain.entities.Image;
 import com.alberinando.imagelite.domain.entities.enums.ImageExtension;
 import com.alberinando.imagelite.domain.services.ImageServices;
 import com.alberinando.imagelite.infrastructure.mapper.ImageMapper;
+import com.alberinando.imagelite.web.dto.image.ImageEditDTO;
 import com.alberinando.imagelite.web.dto.image.createImageDTO;
 import com.alberinando.imagelite.web.dto.image.responseImageDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -64,6 +66,39 @@ public class ImagesController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<ImageEditDTO> getImageForEdit(@PathVariable String id) {
+        return imageServices.findById(id)
+                .map(image -> {
+                    ImageEditDTO editDTO = imageMapper.imageToEditDTO(image);
+                    return ResponseEntity.ok(editDTO);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ImageEditDTO> updateImage(
+            @PathVariable String id,
+            @ModelAttribute createImageDTO updateDTO) throws IOException {
+
+        Optional<Image> optImage = imageServices.findById(id);
+        if(optImage.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        Image image = optImage.get();
+        image.setName(updateDTO.getName());
+        image.setTags(String.join(",", updateDTO.getTags()));
+
+        if (updateDTO.getFile() != null && !updateDTO.getFile().isEmpty()) {
+            image.setFile(updateDTO.getFile().getBytes());
+            image.setSize(updateDTO.getFile().getSize());
+            String contentType = updateDTO.getFile().getContentType();
+            image.setExtension(ImageExtension.valueOfExtension(MediaType.valueOf(contentType)));
+        }
+        Image updatedImage = imageServices.save(image);
+        ImageEditDTO editDTO = imageMapper.imageToEditDTO(updatedImage);
+        return ResponseEntity.ok(editDTO);
+    }
 
     @GetMapping
     public ResponseEntity<List<responseImageDTO>> search(@RequestParam(value = "Extension", required = false, defaultValue = "") String extension, @RequestParam(value = "Query", required = false) String query) {
